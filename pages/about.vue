@@ -6,6 +6,11 @@
     <h2>Selamat datang di</h2>
     <h1>{{ appTitle }}</h1>
 
+    <br><br>
+    <p>
+      Bila Anda menemukan bug atau menginginkan fitur baru, silahkan isi <a href="https://github.com/mazipan/quran-offline/issues/new">disini.</a>
+    </p>
+
     <footer class="footer">
       Dibuat oleh Irfan Maulana
       <br>
@@ -23,18 +28,24 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+
 import { AppConstant } from '../constant/index'
-import { EventBus } from '../eventbus/index'
 
 export default {
   name: 'PageAbout',
-  data() {
+  data () {
     return {
       appTitle: AppConstant.TITLE
-    };
+    }
   },
-  mounted() {
-    EventBus.$emit('changeSurah')
+  mounted () {
+    this.setHeaderTitle('Tentang')
+  },
+  methods: {
+    ...mapMutations([
+      'setHeaderTitle'
+    ])
   }
 }
 </script>

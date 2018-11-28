@@ -1,21 +1,24 @@
 <template>
-  <div class="app quran-offline">
+  <div
+    :class="theme"
+    class="app quran-offline">
     <div
       v-show="isShowSidebar"
       class="sidebar-cover"
       @click="hideSidebar" />
-    <BaseSidebar
-      :class="{'sidebar--open': isShowSidebar}"
-      :surah="surahShowing"/>
-    <BaseHeader
-      :surah="surahShowing"/>
+    <BaseSidebar :class="{'sidebar--open': isShowSidebar}"/>
+    <BaseHeader/>
     <nuxt class="app__content"/>
+    <BaseToast/>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 import BaseHeader from '../components/BaseHeader.vue'
 import BaseSidebar from '../components/BaseSidebar.vue'
+import BaseToast from '../components/BaseToast.vue'
 
 import { __isNotNull } from '../utils/index'
 import { EventBus } from '../eventbus/index'
@@ -24,38 +27,42 @@ export default {
   name: 'DefaultLayout',
   components: {
     BaseHeader,
-    BaseSidebar
+    BaseSidebar,
+    BaseToast
   },
   data () {
     return {
-      isShowSidebar: false,
-      surahShowing: '',
+      isShowSidebar: false
     }
   },
-  mounted() {
-    EventBus.$on('toggleSidebar', param => {
-      if (__isNotNull(param)) {
-        this.isShowSidebar = param
-      } else {
-        this.isShowSidebar = !this.isShowSidebar
-      }
-    })
-    EventBus.$on('changeSurah', param => {
-      if (__isNotNull(param)) {
-        this.surahShowing = param
-      } else {
-        this.surahShowing = ''
-      }
-    })
+  computed: {
+    ...mapState([
+      'theme'
+    ])
+  },
+  mounted () {
+    this.initSidebarAction()
+    this.readDataFromStorage()
   },
   methods: {
-    hideSidebar: function () {
-      EventBus.$emit('toggleSidebar');
+    ...mapActions([
+      'readDataFromStorage'
+    ]),
+    hideSidebar () {
+      EventBus.$emit('toggleSidebar')
+    },
+    initSidebarAction () {
+      EventBus.$on('toggleSidebar', param => {
+        if (__isNotNull(param)) {
+          this.isShowSidebar = param
+        } else {
+          this.isShowSidebar = !this.isShowSidebar
+        }
+      })
     }
   }
 }
 </script>
-
 
 <style lang="scss">
   @import '@/assets/main.scss';

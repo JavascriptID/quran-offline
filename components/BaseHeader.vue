@@ -3,7 +3,7 @@
     <div class="header__sticky">
       <div class="header__nav">
         <a
-          v-if="!isHaveSurah"
+          v-if="isHomePage"
           class="header__hamburger"
           href="javascript:void(0)"
           title="Open Sidebar"
@@ -15,6 +15,9 @@
             fill="#fff">
             <path d="M64 384h384v-42.666H64V384zm0-106.666h384v-42.667H64v42.667zM64 128v42.665h384V128H64z"/>
           </svg>
+    
+            
+            
         </a>
         <nuxt-link
           v-else
@@ -32,15 +35,15 @@
       <div
         class="header__content">
         <nuxt-link
-          v-if="!isHaveSurah"
+          v-if="isHomePage"
           to="/"
           class="header__title">
-          <h1>{{ appTitle }}</h1>
+          <h1>{{ headerTitle }}</h1>
         </nuxt-link>
-        <h1 v-else >{{ surah }}</h1>
+        <h1 v-else >{{ headerTitle }}</h1>
       </div>
       <div
-        v-if="isHaveSurah"
+        v-if="!isHomePage"
         class="header__nav pointer"
         @click="toggleMenuRight">
         <svg
@@ -81,39 +84,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { EventBus } from '../eventbus/index'
 import { AppConstant } from '../constant/index'
-import { __isNotEmptyString } from '../utils/index'
 
 export default {
   name: 'BaseHeader',
-  props: {
-    surah: {
-      type: String,
-      default: ''
+  data () {
+    return {
+      isShowMenu: false
     }
   },
-  data() {
-    return {
-      isShowMenu: false,
-      appTitle: AppConstant.TITLE
-    };
-  },
   computed: {
-    isHaveSurah() {
-      return __isNotEmptyString(this.surah)
+    ...mapState([
+      'headerTitle'
+    ]),
+    isHomePage () {
+      return this.headerTitle === AppConstant.TITLE
     }
   },
   methods: {
     navigateTo: function (link) {
-      this.toggleMenuRight();
+      this.toggleMenuRight()
       if (link.indexOf('http') >= 0) {
         window.location.href = link
       } else {
         this.$router.push(link)
       }
     },
-    toggleMenuRight() {
+    toggleMenuRight () {
       this.isShowMenu = !this.isShowMenu
       if (this.isShowMenu) {
         setTimeout(() => {
@@ -121,17 +121,17 @@ export default {
         }, 2000)
       }
     },
-    toggleSidebar() {
-      EventBus.$emit('toggleSidebar');
+    toggleSidebar () {
+      EventBus.$emit('toggleSidebar')
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
 @import '../assets/header.scss';
 .menu_right{
-  position: absolute;
+  position: fixed;
   top: 50px;
   right: 30px;
   z-index: 99;
