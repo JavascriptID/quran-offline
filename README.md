@@ -1,8 +1,8 @@
 # quran-offline
 
-📖 Read Qur'an Anywhere, Directly from Your Browser, No Need Installing Apps Anymore
+📖 Read Qur'an Directly from Your Web Browser, No Need Installing Apps Anymore. No Ads, No Analytics, It's Totally Free.
 
-[![Travis](https://img.shields.io/travis/mazipan/quran-offline.svg)](https://travis-ci.org/mazipan/quran-offline)
+[![Travis](https://img.shields.io/travis/mazipan/quran-offline.svg)](https://travis-ci.org/mazipan/quran-offline) [![Codecov](https://codecov.io/gh/mazipan/quran-offline/branch/master/graph/badge.svg)](https://codecov.io/gh/mazipan/quran-offline)
 
 ## Live Website
 
@@ -14,17 +14,20 @@
 
 ## Fitur
 
-+ Akses offline (setelah akses online pertama)
-+ Cari surat berdasarkan nama
-+ Simpan surat favorit
-+ Simpan ayat yang dibaca terakhir
-+ Rekomendasi surat populer
+- [x] Daftar seluruh surat
+- [x] Ayat kursi
+- [x] Asmaul husna
+- [x] Akses offline (setelah akses online pertama)
+- [x] Pencarian surat berdasarkan nama
+- [x] Simpan surat favorit
+- [x] Simpan ayat yang terakhir dibaca
+- [x] Rekomendasi beberapa surat populer
 
 TODO
 
-+ Mode malam
-+ Pergi ke ayat dengan cepat di dalam surat
-+ Audio
+- [ ] Mode malam
+- [ ] Pergi ke ayat dengan cepat di dalam surat
+- [ ] Audio
 
 ## Build Setup
 
@@ -41,7 +44,8 @@ $ yarn run generate
 
 ## Credit
 
-Thanks for awesome repo [quran-json](https://github.com/rioastamal/quran-json) by [@rioastamal](https://github.com/rioastamal)
++ Thanks for awesome repo [quran-json](https://github.com/rioastamal/quran-json) by [@rioastamal](https://github.com/rioastamal)
++ Asmaul Husna source from [jagad.id](https://jagad.id/99-asmaul-husna-latin-arab-dan-terjemahan-indonesia-inggris/)
 
 ----
 
