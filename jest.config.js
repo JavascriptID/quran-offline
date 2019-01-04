@@ -1,25 +1,39 @@
 module.exports = {
   verbose: true,
-  coveragePathIgnorePatterns: [
-    '<rootDir>/.nuxt/',
-    '<rootDir>/assets/',
-    '<rootDir>/constant/',
-    '<rootDir>/dist/',
-    '<rootDir>/middleware/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/plugins/',
-    '<rootDir>/server/',
-    '<rootDir>/static/'
+  collectCoverage: true,
+  collectCoverageFrom: [
+    // include folder
+    '**/components/**/*.{js,vue}',
+    '**/layouts/**/*.{js,vue}',
+    '**/pages/**/*.{js,vue}',
+    '**/services/**/*.{js,vue}',
+    '**/store/**/*.{js,vue}',
+    '**/utils/**/*.{js,vue}',
+    // exclude folder and files
+    '!**/node_modules/**',
+    '!**/.nuxt/**',
+    '!**/assets/**',
+    '!**/constant/**',
+    '!**/coverage/**',
+    '!**/dist/**',
+    '!**/middleware/**',
+    '!**/plugins/**',
+    '!**/server/**',
+    '!**/static/**',
+    '!**/test/**',
+    '!**/*rc.{js,vue}',
+    '!**/*.config.{js,vue}'
   ],
   coverageDirectory: 'coverage',
   moduleNameMapper: {
+    '^~/(.*)$': '<rootDir>/$1',
     '^@/(.*)$': '<rootDir>/$1',
     '^vue$': 'vue/dist/vue.common.js'
   },
   moduleFileExtensions: ['js', 'vue', 'json'],
   transform: {
-    '.*\\.(vue)$': 'vue-jest',
-    '^.+\\.js$': '<rootDir>/node_modules/babel-jest'
+    '^.+.js$': '<rootDir>/node_modules/babel-jest',
+    '^.+.vue$': '<rootDir>/node_modules/vue-jest'
   },
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
   setupTestFrameworkScriptFile: '<rootDir>/test/setup-test.js'
