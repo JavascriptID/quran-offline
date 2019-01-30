@@ -33,14 +33,12 @@ import VerseCard from '../components/VerseCard'
 import SurahHeader from '../components/SurahHeader'
 import SurahNavigation from '../components/SurahNavigation'
 
-import { __isNotEmptyArray } from '../utils/index'
+import { __isNotNull, __isNotEmptyArray } from '../utils/index'
 
 export default {
   name: 'PageSurahDetail',
   head () {
-    return {
-      title: `Qur'an Surat ${this.currentSurah.name_latin} | Qur'an Offline`
-    }
+    return this.metaHead
   },
   components: {
     VerseCard,
@@ -54,14 +52,30 @@ export default {
   },
   computed: {
     ...mapState([
+      'settingActiveTheme',
       'surahDetail',
       'allSurahList'
     ]),
+    metaHead () {
+      const title = `Baca Qur'an Surat ${this.currentSurah.name_latin} - Surat ke ${this.surahId}| Qur'an Offline`
+      return {
+        title,
+        meta: [
+          { hid: 'og:title', property: 'og:title', content: title },
+          { hid: 'twitter:title', name: 'twitter:title', content: title },
+          { hid: 'theme-color', name: 'theme-color', content: this.settingActiveTheme.bgColor }
+        ]
+      }
+    },
     currentSurah () {
       return this.surahDetail
     },
     surahId () {
-      return Number(this.$route.params.surahid)
+      let id = 0
+      if (__isNotNull(this.$route.params && this.$route.params.surahid)) {
+        id = Number(this.$route.params.surahid)
+      }
+      return id
     },
     isValidSurah () {
       return this.surahId > 0 && this.surahId <= 114
@@ -122,7 +136,7 @@ export default {
   &__content {
     width: 90%;
     margin: 0 auto;
-    margin-bottom: 5em;
+    padding-bottom: 5em;
   }
 }
 </style>

@@ -26,6 +26,8 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   moduleNameMapper: {
+    '\\.(css|less|sass|scss)$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.(gif|ttf|eot|svg)$': '<rootDir>/__mocks__/fileMock.js',
     '^~/(.*)$': '<rootDir>/$1',
     '^@/(.*)$': '<rootDir>/$1',
     '^vue$': 'vue/dist/vue.common.js'
@@ -36,5 +38,5 @@ module.exports = {
     '^.+.vue$': '<rootDir>/node_modules/vue-jest'
   },
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
-  setupTestFrameworkScriptFile: '<rootDir>/test/setup-test.js'
+  setupFilesAfterEnv: ['<rootDir>/test/setup-test.js']
 }
