@@ -23,9 +23,6 @@
 </template>
 
 <script>
-// polyfill
-import 'unfetch/polyfill'
-
 import { mapState, mapMutations, mapActions } from 'vuex'
 
 import ArrowUpIcon from 'vue-ionicons/dist/js/ios-arrow-dropup-circle'
@@ -46,7 +43,7 @@ export default {
     BaseToast,
     ArrowUpIcon
   },
-  data () {
+  data() {
     return {
       showArrowToTop: false,
       webpClass: 'no-webp'
@@ -58,7 +55,7 @@ export default {
       'isShowSidebar'
     ])
   },
-  mounted () {
+  mounted() {
     this.initDataFromBrowserStorage()
     window.addEventListener('scroll', this.handleScroll)
     if (window.navigator.share) {
@@ -68,7 +65,7 @@ export default {
     if (isSupportWebp()) clasz = 'webp'
     this.webpClass = clasz
   },
-  beforedestroy () {
+  beforedestroy() {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
@@ -79,10 +76,10 @@ export default {
       'initDataFromBrowserStorage',
       'setWebshareSupport'
     ]),
-    hideSidebar () {
+    hideSidebar() {
       this.setShowSidebar(false)
     },
-    handleScroll () {
+    handleScroll() {
       this.showArrowToTop = (window.pageYOffset > 2000)
     }
   }

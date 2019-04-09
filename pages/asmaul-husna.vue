@@ -37,27 +37,27 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { __isNotEmptyString, __normalizeText } from '../utils/index'
+
+import { getAsmaulHusna } from '../services/index'
 
 export default {
   name: 'AsmaulHusnaPage',
-  head () {
+  head() {
     return this.metaHead
   },
-  data () {
+  data() {
     return {
-      loading: true,
       searchText: ''
     }
   },
   computed: {
     ...mapState([
-      'settingActiveTheme',
-      'asmaulHusna'
+      'settingActiveTheme'
     ]),
-    metaHead () {
-      const title = this.$t('pageTitle.asmaulHusna')
+    metaHead() {
+      const title = 'Daftar lengkap asmaul husna beserta terjemahan | Qur\'an Offline'
       return {
         title,
         meta: [
@@ -67,13 +67,13 @@ export default {
         ]
       }
     },
-    filteredAsmaulHusna () {
+    filteredAsmaulHusna() {
       if (__isNotEmptyString(this.searchText) && this.searchText.length >= 3) {
-        return this.asmaulHusna.filter(item => {
-          let predicateTranslation = __normalizeText(item.translation_id).includes(
+        return this.asmaulHusna.filter((item) => {
+          const predicateTranslation = __normalizeText(item.translation_id).includes(
             __normalizeText(this.searchText)
           )
-          let predicateLatin = __normalizeText(item.latin).includes(
+          const predicateLatin = __normalizeText(item.latin).includes(
             __normalizeText(this.searchText)
           )
 
@@ -82,25 +82,14 @@ export default {
       } else return this.asmaulHusna || []
     }
   },
-  mounted () {
-    this.onMountedPage()
-  },
-  methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ]),
-    ...mapActions([
-      'fetchAsmaulHusna'
-    ]),
-    onMountedPage () {
-      this.setHeaderTitle('Asmaul Husna')
-      this.fetchAsmaulHusna({
-        success: this.onSuccess
-      })
-    },
-    onSuccess () {
-      this.loading = false
+  async asyncData() {
+    const data = await getAsmaulHusna()
+    return {
+      asmaulHusna: data.data.data
     }
+  },
+  fetch({ store }) {
+    store.commit('setHeaderTitle', 'Asmaul Husna')
   }
 }
 </script>

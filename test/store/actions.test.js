@@ -1,18 +1,16 @@
 /* eslint-env jest */
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import state from '~/store/state'
-import mutations from '~/store/mutations'
-import actions from '~/store/actions'
+import { state } from '~/store/state'
+import { mutations } from '~/store/mutations'
+import { actions } from '~/store/actions'
 import Theme from '~/constant/theme'
-
-import * as Services from '~/services/index'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
 
 const store = new Vuex.Store({
-  state,
+  state: state(),
   mutations,
   actions
 })
@@ -132,79 +130,6 @@ describe('store actions', () => {
     store.dispatch('setWebshareSupport', false)
     store.dispatch('shareViaWebshare', dataDummy)
     expect(MockFn).toBeCalledTimes(0)
-    done()
-  })
-  test('should dispatch fetchAllSurah correctly', (done) => {
-    Services.getAllSurah.mockResolvedValueOnce({
-      data: {
-        surah_info: [{
-          translation: 'Pembukaan',
-          arabic: 'الفاتحة',
-          latin: 'Al-Fatihah',
-          ayah_count: 7,
-          index: 1
-        }]
-      }
-    })
-    store.dispatch('fetchAllSurah', {
-      success: () => {}
-    })
-    expect(Services.getAllSurah).toBeCalled()
-    done()
-  })
-  test('should dispatch fetchSurahById correctly', (done) => {
-    Services.getSurahById.mockResolvedValueOnce({
-      data: {
-        '1': [{
-          translation: 'Pembukaan',
-          arabic: 'الفاتحة',
-          latin: 'Al-Fatihah',
-          ayah_count: 7,
-          index: 1
-        }]
-      }
-    })
-    store.dispatch('fetchSurahById', {
-      id: '1',
-      success: () => {}
-    })
-    expect(Services.getSurahById).toBeCalled()
-    done()
-  })
-  test('should dispatch fetchAyatKursi correctly', (done) => {
-    Services.getAyatKursi.mockResolvedValueOnce({
-      data: {
-        data: 'dummy'
-      }
-    })
-    store.dispatch('fetchAyatKursi', {
-      success: () => {}
-    })
-    expect(Services.getAyatKursi).toBeCalled()
-    done()
-  })
-  test('should dispatch fetchAsmaulHusna correctly', (done) => {
-    Services.getAsmaulHusna.mockResolvedValueOnce({
-      data: {
-        data: 'dummy'
-      }
-    })
-    store.dispatch('fetchAsmaulHusna', {
-      success: () => {}
-    })
-    expect(Services.getAsmaulHusna).toBeCalled()
-    done()
-  })
-  test('should dispatch fetchDailyDoa correctly', (done) => {
-    Services.getDailyDoa.mockResolvedValueOnce({
-      data: {
-        data: 'dummy'
-      }
-    })
-    store.dispatch('fetchDailyDoa', {
-      success: () => {}
-    })
-    expect(Services.getDailyDoa).toBeCalled()
     done()
   })
 })

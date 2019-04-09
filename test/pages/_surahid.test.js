@@ -4,11 +4,21 @@ import Vuex from 'vuex'
 import Helpers from '~/test/helper'
 import Component from '~/pages/_surahid/index.vue'
 
-import MutationType from '~/store/mutation-type'
+import { Types } from '~/store/types'
 import Theme from '~/constant/theme'
 
 import dummySurahInfo from './__mocks__/surah-info-item'
 import dummySurahDetail from './__mocks__/surah-detail'
+
+const dummyComponent = {
+  extends: Component,
+  data() {
+    return {
+      allSurahList: [dummySurahInfo],
+      surahDetail: dummySurahDetail
+    }
+  }
+}
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -25,10 +35,10 @@ const createStore = (dummyAllsurahList) => {
       allSurahList: surahList
     },
     mutations: {
-      [MutationType.SET_HEADER_TITLE] (state, data) {
+      [Types.SET_HEADER_TITLE](state, data) {
         state.headerTitle = data
       },
-      [MutationType.SET_THEME] (state, data) {
+      [Types.SET_THEME](state, data) {
         state.settingActiveTheme = data
       }
     },
@@ -51,7 +61,7 @@ const createWrapper = ($mockRoute, dummyAllsurahList) => {
     $route = $mockRoute
   }
 
-  return shallowMount(Component, {
+  return shallowMount(dummyComponent, {
     sync: false,
     store: createStore(dummyAllsurahList),
     i18n,
@@ -73,7 +83,7 @@ describe('pages _surahid.vue', () => {
   test('computed for meta should fired', (done) => {
     const wrapper = createWrapper()
     // trigger change state with commit via mutations
-    wrapper.vm.$store.commit(MutationType.SET_THEME, Theme.DARK)
+    wrapper.vm.$store.commit(Types.SET_THEME, Theme.DARK)
     const title = wrapper.vm.$t('pageTitle.surahDetail', { surahName: 'Al-Fatihah', surahNumber: 2 })
     const expected = {
       title,
@@ -115,24 +125,15 @@ describe('pages _surahid.vue', () => {
     done()
   })
 
-  test('computed prevSurah should return null', (done) => {
+  test('computed prevSurah should not return null', (done) => {
     const wrapper = createWrapper(null, [])
-    expect(wrapper.vm.prevSurah).toBeNull()
+    expect(wrapper.vm.prevSurah).not.toBeNull()
     done()
   })
 
-  test('computed nextSurah should return null', (done) => {
+  test('computed nextSurah should return undefined', (done) => {
     const wrapper = createWrapper(null, [])
-    expect(wrapper.vm.nextSurah).toBeNull()
-    done()
-  })
-
-  test('method onSuccess', (done) => {
-    const wrapper = createWrapper()
-    wrapper.vm.onSuccess({
-      name_latin: 'dummy'
-    })
-    expect(wrapper.vm.loading).toBe(false)
+    expect(wrapper.vm.nextSurah).toBeUndefined()
     done()
   })
 })

@@ -1,7 +1,6 @@
 <template>
   <section class="container">
-    <div
-      class="detail">
+    <div class="detail">
       <SurahHeader
         :surah-number="Number(currentSurah.number)"
         :surah-name="currentSurah.name"
@@ -27,17 +26,18 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import VerseCard from '../../components/VerseCard'
 import SurahHeader from '../../components/SurahHeader'
 import SurahNavigation from '../../components/SurahNavigation'
 
 import { __isNotNull, __isNotEmptyArray } from '../../utils/index'
+import { getAllSurah, getSurahById } from '../../services/index'
 
 export default {
   name: 'PageSurahDetail',
-  head () {
+  head() {
     return this.metaHead
   },
   components: {
@@ -45,91 +45,85 @@ export default {
     SurahHeader,
     SurahNavigation
   },
-  data () {
+  data() {
     return {
       loading: true
     }
   },
   computed: {
-    ...mapState([
-      'settingActiveTheme',
-      'surahDetail',
-      'allSurahList'
-    ]),
-    metaHead () {
-      const title = this.$t('pageTitle.surahDetail', { surahName: this.currentSurah.name_latin, surahNumber: this.surahId })
+    ...mapState(['settingActiveTheme']),
+    metaHead() {
+      const title = `Baca Al-Qur'an surat ke ${this.surahId} - ${this.currentSurah.name_latin} | Qur'an Offline`
+
       return {
         title,
         meta: [
           { hid: 'og:title', property: 'og:title', content: title },
           { hid: 'twitter:title', name: 'twitter:title', content: title },
-          { hid: 'theme-color', name: 'theme-color', content: this.settingActiveTheme.bgColor }
+          {
+            hid: 'theme-color',
+            name: 'theme-color',
+            content: this.settingActiveTheme.bgColor
+          }
         ]
       }
     },
-    currentSurah () {
+    currentSurah() {
       return this.surahDetail
     },
-    surahId () {
+    surahId() {
       let id = 0
       if (__isNotNull(this.$route.params && this.$route.params.surahid)) {
         id = Number(this.$route.params.surahid)
       }
       return id
     },
-    isValidSurah () {
+    isValidSurah() {
       return this.surahId > 0 && this.surahId <= 114
     },
-    prevSurah () {
+    prevSurah() {
       if (__isNotEmptyArray(this.allSurahList)) {
         if (this.surahId > 1) {
-          return this.allSurahList.find(item => item.index === this.surahId - 1)
+          return this.allSurahList.find(
+            item => item.index === this.surahId - 1
+          )
         }
       }
       return null
     },
-    nextSurah () {
+    nextSurah() {
       if (__isNotEmptyArray(this.allSurahList)) {
         if (this.surahId < 114) {
-          return this.allSurahList.find(item => item.index === this.surahId + 1)
+          return this.allSurahList.find(
+            item => item.index === this.surahId + 1
+          )
         }
       }
       return null
     }
   },
-  mounted () {
-    this.onMountedDetailPage(this.surahId)
-  },
-  methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ]),
-    ...mapActions([
-      'fetchAllSurah',
-      'fetchSurahById'
-    ]),
-    onMountedDetailPage (id) {
-      if (!__isNotEmptyArray(this.allSurahList)) {
-        this.fetchAllSurah({
-          success: () => {}
-        })
-      }
+  async asyncData({ params }) {
+    const resp = await getAllSurah()
+    const respDetail = await getSurahById(params.surahid)
 
-      this.fetchSurahById({
-        id,
-        success: this.onSuccess
-      })
-    },
-    onSuccess (data) {
-      this.setHeaderTitle(`${this.surahId}: ${data.name_latin}`)
-      this.loading = false
+    return {
+      allSurahList: resp.data.surah_info.map((item, idx) => {
+        return Object.assign({}, item, { index: idx + 1 })
+      }),
+      surahDetail: respDetail.data[params.surahid]
     }
+  },
+  created() {
+    this.$store.commit(
+      'setHeaderTitle',
+      `${this.surahId}: ${this.currentSurah.name_latin}`
+    )
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/_variables.scss';
+@import "@/assets/_variables.scss";
 
 .detail {
   &__content {

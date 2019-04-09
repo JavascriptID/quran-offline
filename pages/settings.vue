@@ -57,17 +57,15 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
-import MutationType from '../store/mutation-type'
-
+import { mapActions, mapState } from 'vuex'
 import Theme from '../constant/theme'
 
 export default {
   name: 'SettingsPage',
-  head () {
+  head() {
     return this.metaHead
   },
-  data () {
+  data() {
     return {
       themesAvailable: Theme.AVAILABLE_THEME,
       modelSettingTranslation: true,
@@ -80,8 +78,8 @@ export default {
       'settingShowTranslation',
       'settingShowTafsir'
     ]),
-    metaHead () {
-      const title = this.$t('pageTitle.setting')
+    metaHead() {
+      const title = 'Halaman setelan | Qur\'an Offline'
       return {
         title,
         meta: [
@@ -92,32 +90,31 @@ export default {
       }
     }
   },
-  mounted () {
-    this[MutationType.SET_HEADER_TITLE](this.$t('setting'))
+  fetch({ app, store }) {
+    store.commit('setHeaderTitle', 'Setelan')
+  },
+  mounted() {
     setTimeout(() => {
       this.setDefaultSetting()
     }, 500)
   },
   methods: {
-    ...mapMutations([
-      MutationType.SET_HEADER_TITLE
-    ]),
     ...mapActions([
       'setActiveTheme',
       'setSettingTranslation',
       'setSettingTafsir'
     ]),
-    setDefaultSetting () {
+    setDefaultSetting() {
       this.modelSettingTranslation = this.settingShowTranslation
       this.modelSettingTafsir = this.settingShowTafsir
     },
-    onSelectTheme (theme) {
+    onSelectTheme(theme) {
       this.setActiveTheme(theme)
     },
-    onChangeSettingTranslation () {
+    onChangeSettingTranslation() {
       this.setSettingTranslation(this.modelSettingTranslation)
     },
-    onChangeSettingTafsir () {
+    onChangeSettingTafsir() {
       this.setSettingTafsir(this.modelSettingTafsir)
     }
   }

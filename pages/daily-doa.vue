@@ -43,17 +43,17 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { __isNotEmptyString, __normalizeText } from '../utils/index'
+import { getDailyDoa } from '../services/index'
 
 export default {
   name: 'DailyDoa',
-  head () {
+  head() {
     return this.metaHead
   },
-  data () {
+  data() {
     return {
-      loading: true,
       searchText: '',
       expandedData: {
         title: ''
@@ -62,11 +62,10 @@ export default {
   },
   computed: {
     ...mapState([
-      'settingActiveTheme',
-      'dailyDoa'
+      'settingActiveTheme'
     ]),
-    metaHead () {
-      const title = this.$t('pageTitle.dailyDoa')
+    metaHead() {
+      const title = 'Daftar bacaan do\'a sehari-hari beserta terjemahan | Qur\'an Offline'
       return {
         title,
         meta: [
@@ -76,10 +75,10 @@ export default {
         ]
       }
     },
-    filteredDailyDoa () {
+    filteredDailyDoa() {
       if (__isNotEmptyString(this.searchText) && this.searchText.length >= 3) {
-        return this.dailyDoa.filter(item => {
-          let predicate = __normalizeText(item.title).includes(
+        return this.dailyDoa.filter((item) => {
+          const predicate = __normalizeText(item.title).includes(
             __normalizeText(this.searchText)
           )
 
@@ -88,33 +87,24 @@ export default {
       } else return this.dailyDoa || []
     }
   },
-  mounted () {
-    this.onMountedPage()
+  async asyncData() {
+    const data = await getDailyDoa()
+    return {
+      dailyDoa: data.data.data
+    }
+  },
+  fetch({ store }) {
+    store.commit('setHeaderTitle', `Do'a Harian`)
   },
   methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ]),
-    ...mapActions([
-      'fetchDailyDoa'
-    ]),
-    onMountedPage () {
-      this.setHeaderTitle(`Do'a Harian`)
-      this.fetchDailyDoa({
-        success: this.onSuccess
-      })
-    },
-    onSuccess () {
-      this.loading = false
-    },
-    onClickDoa (item) {
+    onClickDoa(item) {
       if (this.isExpanded(item.title)) {
         this.expandedData = {
           title: ''
         }
       } else this.expandedData = item
     },
-    isExpanded (title) {
+    isExpanded(title) {
       return title === this.expandedData.title
     }
   }

@@ -1,7 +1,6 @@
 <template>
   <section class="container">
     <div
-      v-if="!loading"
       class="home">
       <div class="home__wrapper">
         <div class="item">
@@ -80,7 +79,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 
 import MdBookIcon from 'vue-ionicons/dist/js/md-book'
 import MdGridIcon from 'vue-ionicons/dist/js/md-grid'
@@ -94,7 +93,7 @@ import { AppConstant } from '../constant/index.js'
 
 export default {
   name: 'PageIndex',
-  head () {
+  head() {
     return this.metaHead
   },
   components: {
@@ -106,9 +105,8 @@ export default {
     IosBookmarkIcon,
     IosColorWandIcon
   },
-  data () {
+  data() {
     return {
-      loading: true,
       AppConstant
     }
   },
@@ -116,8 +114,8 @@ export default {
     ...mapState([
       'settingActiveTheme'
     ]),
-    metaHead () {
-      const title = this.$t('pageTitle.home')
+    metaHead() {
+      const title = 'Baca Al-Qur\'an dimana saja, langsung dari web browser Anda | Qur\'an Offline'
       return {
         title,
         meta: [
@@ -128,16 +126,8 @@ export default {
       }
     }
   },
-  mounted () {
-    this.setHeaderTitle(AppConstant.TITLE)
-    setTimeout(() => {
-      this.loading = false
-    }, 1000)
-  },
-  methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ])
+  fetch({ store }) {
+    store.commit('setHeaderTitle', AppConstant.TITLE)
   }
 }
 </script>

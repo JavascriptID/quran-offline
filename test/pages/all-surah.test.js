@@ -4,10 +4,19 @@ import Vuex from 'vuex'
 import Helpers from '~/test/helper'
 import Component from '~/pages/all-surah.vue'
 
-import MutationType from '~/store/mutation-type'
+import { Types } from '~/store/types'
 import Theme from '~/constant/theme'
 
 import dummySurahInfo from './__mocks__/surah-info-item'
+
+const dummyComponent = {
+  extends: Component,
+  data() {
+    return {
+      allSurahList: [dummySurahInfo]
+    }
+  }
+}
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -21,13 +30,13 @@ const store = new Vuex.Store({
     allSurahList: [dummySurahInfo]
   },
   mutations: {
-    [MutationType.SET_HEADER_TITLE] (state, data) {
+    [Types.SET_HEADER_TITLE](state, data) {
       state.headerTitle = data
     },
-    [MutationType.SET_THEME] (state, data) {
+    [Types.SET_THEME](state, data) {
       state.settingActiveTheme = data
     },
-    [MutationType.SET_SURAH_LIST] (state, data) {
+    [Types.SET_SURAH_LIST](state, data) {
       state.allSurahList = data
     }
   },
@@ -37,7 +46,7 @@ const store = new Vuex.Store({
 })
 
 const createWrapper = () => {
-  return shallowMount(Component, {
+  return shallowMount(dummyComponent, {
     sync: false,
     store,
     router,
@@ -54,7 +63,7 @@ describe('pages all-surah.vue', () => {
   test('computed for meta should fired', (done) => {
     const wrapper = createWrapper()
     // trigger change state with commit via mutations
-    wrapper.vm.$store.commit(MutationType.SET_THEME, Theme.DARK)
+    wrapper.vm.$store.commit(Types.SET_THEME, Theme.DARK)
     const title = wrapper.vm.$t('pageTitle.allSurah')
     const expected = {
       title,
@@ -65,12 +74,6 @@ describe('pages all-surah.vue', () => {
       ]
     }
     expect(wrapper.vm.metaHead).toEqual(expected)
-    done()
-  })
-  test('method fetchSurahInfo fired correctly', (done) => {
-    const wrapper = createWrapper()
-    wrapper.vm.fetchSurahInfo()
-    expect(mockAction).toBeCalled()
     done()
   })
   test('computed filteredSurah should triggered', (done) => {
@@ -89,12 +92,6 @@ describe('pages all-surah.vue', () => {
     const wrapper = createWrapper()
     wrapper.vm.searchText = ''
     expect(wrapper.vm.filteredSurah).toEqual([dummySurahInfo])
-    done()
-  })
-  test('method onSuccess', (done) => {
-    const wrapper = createWrapper()
-    wrapper.vm.onSuccess()
-    expect(wrapper.vm.loading).toBe(false)
     done()
   })
 })

@@ -4,10 +4,19 @@ import Vuex from 'vuex'
 import Helpers from '~/test/helper'
 import Component from '~/pages/daily-doa.vue'
 
-import MutationType from '~/store/mutation-type'
+import { Types } from '~/store/types'
 import Theme from '~/constant/theme'
 
 import dummydailyDoa from './__mocks__/daily-doa'
+
+const dummyComponent = {
+  extends: Component,
+  data() {
+    return {
+      dailyDoa: dummydailyDoa
+    }
+  }
+}
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -21,10 +30,10 @@ const store = new Vuex.Store({
     dailyDoa: dummydailyDoa
   },
   mutations: {
-    [MutationType.SET_HEADER_TITLE] (state, data) {
+    [Types.SET_HEADER_TITLE](state, data) {
       state.headerTitle = data
     },
-    [MutationType.SET_THEME] (state, data) {
+    [Types.SET_THEME](state, data) {
       state.settingActiveTheme = data
     }
   },
@@ -34,7 +43,7 @@ const store = new Vuex.Store({
 })
 
 const createWrapper = () => {
-  return shallowMount(Component, {
+  return shallowMount(dummyComponent, {
     sync: false,
     store,
     router,
@@ -52,7 +61,7 @@ describe('pages daily-doa.vue', () => {
   test('computed for meta should fired', (done) => {
     const wrapper = createWrapper()
     // trigger change state with commit via mutations
-    wrapper.vm.$store.commit(MutationType.SET_THEME, Theme.DARK)
+    wrapper.vm.$store.commit(Types.SET_THEME, Theme.DARK)
     const title = wrapper.vm.$t('pageTitle.dailyDoa')
     const expected = {
       title,
@@ -63,13 +72,6 @@ describe('pages daily-doa.vue', () => {
       ]
     }
     expect(wrapper.vm.metaHead).toEqual(expected)
-    done()
-  })
-
-  test('method onMountedPage fired correctly', (done) => {
-    const wrapper = createWrapper()
-    wrapper.vm.onMountedPage()
-    expect(mockAction).toBeCalled()
     done()
   })
 
@@ -133,13 +135,6 @@ describe('pages daily-doa.vue', () => {
     const wrapper = createWrapper()
     wrapper.vm.searchText = ''
     expect(wrapper.vm.filteredDailyDoa).toEqual(dummydailyDoa)
-    done()
-  })
-
-  test('method onSuccess', (done) => {
-    const wrapper = createWrapper()
-    wrapper.vm.onSuccess()
-    expect(wrapper.vm.loading).toBe(false)
     done()
   })
 })

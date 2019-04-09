@@ -4,10 +4,19 @@ import Vuex from 'vuex'
 import Helpers from '~/test/helper'
 import Component from '~/pages/last-verse.vue'
 
-import MutationType from '~/store/mutation-type'
+import { Types } from '~/store/types'
 import Theme from '~/constant/theme'
 
 import dummySurahInfo from './__mocks__/surah-info-item'
+
+const dummyComponent = {
+  extends: Component,
+  data() {
+    return {
+      allSurahList: [dummySurahInfo]
+    }
+  }
+}
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -21,10 +30,10 @@ const store = new Vuex.Store({
     lastReadVerse: { surah: 1, verse: 1 }
   },
   mutations: {
-    [MutationType.SET_HEADER_TITLE] (state, data) {
+    [Types.SET_HEADER_TITLE](state, data) {
       state.headerTitle = data
     },
-    [MutationType.SET_THEME] (state, data) {
+    [Types.SET_THEME](state, data) {
       state.settingActiveTheme = data
     }
   },
@@ -34,7 +43,7 @@ const store = new Vuex.Store({
 })
 
 const createWrapper = () => {
-  return shallowMount(Component, {
+  return shallowMount(dummyComponent, {
     sync: false,
     store,
     router,
@@ -52,7 +61,7 @@ describe('pages last-verse.vue', () => {
   test('computed for meta should fired', (done) => {
     const wrapper = createWrapper()
     // trigger change state with commit via mutations
-    wrapper.vm.$store.commit(MutationType.SET_THEME, Theme.DARK)
+    wrapper.vm.$store.commit(Types.SET_THEME, Theme.DARK)
     const title = wrapper.vm.$t('pageTitle.lastRead')
     const expected = {
       title,

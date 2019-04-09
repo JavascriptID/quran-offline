@@ -4,12 +4,10 @@
       <div class="feed__title">
         <IosBookmarkIcon
           w="1em"
-          h="1em" />
-        Ayat terakhir dibaca:
+          h="1em" />Ayat terakhir dibaca:
       </div>
       <div class="feed__item clearfix">
-        <div
-          v-if="isHaveLastRead">
+        <div v-if="isHaveLastRead">
           <LastReadCard :surah="lastReadVerseData" />
         </div>
         <div
@@ -24,16 +22,17 @@
 
 <script>
 import IosBookmarkIcon from 'vue-ionicons/dist/js/ios-bookmark'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import LastReadCard from '../components/LastReadCard.vue'
 
 import { AppConstant } from '../constant/index.js'
 import { __isNotNull } from '../utils/index'
+import { getAllSurah } from '../services/index'
 
 export default {
   name: 'LastVersePage',
-  head () {
+  head() {
     return this.metaHead
   },
   components: {
@@ -41,54 +40,49 @@ export default {
     LastReadCard
   },
   computed: {
-    ...mapState([
-      'settingActiveTheme',
-      'allSurahList',
-      'lastReadVerse'
-    ]),
-    metaHead () {
-      const title = this.$t('pageTitle.lastRead')
+    ...mapState(['settingActiveTheme', 'lastReadVerse']),
+    metaHead() {
+      const title = 'Ayat terakhir dibaca | Qur\'an Offline'
       return {
         title,
         meta: [
           { hid: 'og:title', property: 'og:title', content: title },
           { hid: 'twitter:title', name: 'twitter:title', content: title },
-          { hid: 'theme-color', name: 'theme-color', content: this.settingActiveTheme.bgColor }
+          {
+            hid: 'theme-color',
+            name: 'theme-color',
+            content: this.settingActiveTheme.bgColor
+          }
         ]
       }
     },
-    isHaveLastRead () {
+    isHaveLastRead() {
       return __isNotNull(this.lastReadVerse && this.lastReadVerse.surah)
     },
-    lastReadVerseData () {
+    lastReadVerseData() {
       if (this.isHaveLastRead) {
-        const res = this.allSurahList.find(item => item.index === this.lastReadVerse.surah)
+        const res = this.allSurahList.find(
+          item => item.index === this.lastReadVerse.surah
+        )
         return Object.assign({}, res, { verse: this.lastReadVerse.verse })
       }
       return null
     }
   },
-  mounted () {
-    this.setHeaderTitle(AppConstant.LAST_READ)
-    this.fetchSurahInfo()
-  },
-  methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ]),
-    ...mapActions([
-      'fetchAllSurah'
-    ]),
-    fetchSurahInfo () {
-      this.fetchAllSurah({
-        success: () => {}
+  async asyncData() {
+    const data = await getAllSurah()
+    return {
+      allSurahList: data.data.surah_info.map((item, idx) => {
+        return Object.assign({}, item, { index: idx + 1 })
       })
     }
+  },
+  fetch({ store }) {
+    store.commit('setHeaderTitle', AppConstant.LAST_READ)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/feed.scss';
-
+@import "@/assets/feed.scss";
 </style>

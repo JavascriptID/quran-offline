@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import IosNavigateIcon from 'vue-ionicons/dist/js/ios-navigate'
 
 import SurahCard from '../components/SurahCard.vue'
@@ -24,14 +24,14 @@ import surahRecommendation from '../constant/surah-recommendation'
 
 export default {
   name: 'RecommendationPage',
-  head () {
+  head() {
     return this.metaHead
   },
   components: {
     IosNavigateIcon,
     SurahCard
   },
-  data () {
+  data() {
     return {
       surahRecommendation: surahRecommendation.data
     }
@@ -40,8 +40,8 @@ export default {
     ...mapState([
       'settingActiveTheme'
     ]),
-    metaHead () {
-      const title = this.$t('pageTitle.recommendation')
+    metaHead() {
+      const title = 'Baca surat rekomendasi dalam Al-Qur\'an | Qur\'an Offline'
       return {
         title,
         meta: [
@@ -52,13 +52,8 @@ export default {
       }
     }
   },
-  mounted () {
-    this.setHeaderTitle(AppConstant.RECOMMENDATION)
-  },
-  methods: {
-    ...mapMutations([
-      'setHeaderTitle'
-    ])
+  fetch({ store }) {
+    store.commit('setHeaderTitle', AppConstant.RECOMMENDATION)
   }
 }
 </script>
