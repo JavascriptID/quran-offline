@@ -3,35 +3,28 @@
     "target": "es5",
     "module": "esnext",
     "moduleResolution": "node",
-    "lib": [
-      "esnext",
-      "esnext.asynciterable",
-      "dom"
-    ],
+    "lib": ["esnext", "esnext.asynciterable", "dom"],
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "allowJs": true,
     "sourceMap": true,
     "strict": true,
     "noImplicitAny": false,
+    "strictNullChecks": false,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "./*"
-      ],
-      "@/*": [
-        "./*"
-      ]
+      "~/*": ["./*"],
+      "@/*": ["./*"]
     },
-    "types": [
-      "@types/node",
-      "@nuxt/vue-app"
-    ]
+    "types": ["@types/jest", "@types/node", "@nuxt/vue-app"]
   },
   "exclude": [
-    "node_modules",
     "nuxt.config.ts",
-    "**/*.test.ts"
+    "node_modules/**",
+    "dist/**",
+    // ".nuxt/**",
+    "tests/**"
   ]
 }
