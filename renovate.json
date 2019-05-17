@@ -2,8 +2,12 @@
   "extends": [
     "config:base"
   ],
-  "automerge": false,
+  "automerge": true,
   "major": {
     "automerge": false
-  }
+  },
+  "packageRules": [{
+    "packagePatterns": ["^core-js"],
+    "excludePackageNames": ["core-js"]
+  }]
 }
